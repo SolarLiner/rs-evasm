@@ -1,0 +1,119 @@
+	MOV	R0, #106
+	LDR	R1, [R0]
+	ADD	R1, #8
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_0_out
+	BEQ	R1
+
+label_0:
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #4
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_1_out
+	BEQ	R1
+
+label_1:
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #2
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #3
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #3
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #1
+	STR	R1, [R0]
+	SUB	R0, #4
+	LDR	R1, [R0]
+	SUB	R1, #1
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_1
+	BNEQ	R1
+
+label_1_out:
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #1
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #1
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	SUB	R1, #1
+	STR	R1, [R0]
+	ADD	R0, #2
+	LDR	R1, [R0]
+	ADD	R1, #1
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_2_out
+	BEQ	R1
+
+label_2:
+	SUB	R0, #1
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_2
+	BNEQ	R1
+
+label_2_out:
+	SUB	R0, #1
+	LDR	R1, [R0]
+	SUB	R1, #1
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	CMP	R1, #0
+	LDR	R1, label_0
+	BNEQ	R1
+
+label_0_out:
+	ADD	R0, #2
+	ADD	R0, #1
+	LDR	R1, [R0]
+	SUB	R1, #3
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	ADD	R1, #7
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	ADD	R1, #3
+	STR	R1, [R0]
+	ADD	R0, #2
+	SUB	R0, #1
+	LDR	R1, [R0]
+	SUB	R1, #1
+	STR	R1, [R0]
+	SUB	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #3
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	SUB	R1, #6
+	STR	R1, [R0]
+	LDR	R1, [R0]
+	SUB	R1, #8
+	STR	R1, [R0]
+	ADD	R0, #2
+	LDR	R1, [R0]
+	ADD	R1, #1
+	STR	R1, [R0]
+	ADD	R0, #1
+	LDR	R1, [R0]
+	ADD	R1, #2
+	STR	R1, [R0]
