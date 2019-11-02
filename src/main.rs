@@ -1,5 +1,6 @@
 use std::io::{self, Read};
 
+mod generate;
 mod parse;
 
 fn main() -> io::Result<()> {

@@ -1,3 +1,6 @@
+use std::collections::{HashMap, HashSet};
+use std::fmt::{self, Display, Formatter};
+
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum Instruction<'a> {
     Label(&'a str),
@@ -31,7 +34,7 @@ peg::parser! {
         rule constant() -> u16
             = ws() "#" c:number() {c as u16} / expected!("constant")
         rule label() -> &'input str
-            = ws() l:$(quiet!{['a'..='z' | 'A'..='Z' | '_'] (['0'..='9' | 'a'..='z' | 'A'..='Z' | '_'])*}) ws() {l}
+            = ws() l:$(quiet!{['a'..='z' | 'A'..='Z' | '_'] (['0'..='9' | 'a'..='z' | 'A'..='Z' | '_'])*}) ws() {l.to_ascii_uppercase()}
 
         rule instruction_r() -> Instruction<'input>
             = i:instruction() r:register() {Instruction::Reg(i, r)}
@@ -65,4 +68,49 @@ pub fn parse_input(
     input: &str,
 ) -> Result<Vec<Instruction>, peg::error::ParseError<peg::str::LineCol>> {
     asm::program(input)
+}
+
+impl<'a> Instruction<'a> {
+    pub fn get_labels(inst: Vec<Instruction<'a>>) -> Vec<&'a str> {
+        let mut output = vec![];
+        for i in inst {
+            match i {
+                Instruction::Label(lbl) => output.push(lbl),
+                _ => continue,
+            }
+        }
+        return output;
+    }
+
+    pub fn get_addresses(instructions: Vec<Instruction<'a>>) -> HashSet<&'a str,u16> {
+        let mut set = HashSet::new();
+        for (i, instr) in instructions.into_iter().enumerate() {
+            match instr {
+                Instruction::RegLabel(i, reg, label) => set.insert(label, i),
+                _ => {}
+            }
+        }
+        return set;
+    }
+
+    pub fn set_addresses(instructions: Vec<Instruction<'a>>, labels: HashMap<&'a str, u16>) -> Option<Instruction<'a>> {
+
+        match inst {
+            Instruction::RegLabel(i, reg, lbl) => labels.get(lbl).map(|adr| Instruction::RegCst(i, reg, *adr)),
+            x => Some(x)
+        }
+    }
+}
+
+impl<'a> Display for Instruction<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match *self {
+            Instruction::Label(lbl) => write!(f, "{}:", lbl),
+            Instruction::Reg(inst, reg) => write!(f, "\t{}\tR{}", inst, reg),
+            Instruction::RegReg(inst, reg1, reg2) => write!(f, "\t{}\tR{}, R{}", inst, reg1, reg2),
+            Instruction::RegPtr(inst, reg1, reg2) => write!(f, "\t{}\tR{}, [R{}]", inst, reg1, reg2),
+            Instruction::RegCst(inst, reg, cst) => write!(f, "\t{}\rR{}, #{}", inst, reg, cst),
+            Instruction::RegLabel(inst, reg, lbl) => write!(f, "\t{}\tR{}, {}", inst, reg, lbl),
+        }
+    }
 }
