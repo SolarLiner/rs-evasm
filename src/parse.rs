@@ -88,7 +88,7 @@ impl<'a> Instruction<'a> {
 	}
 
 	pub fn set_addresses(instructions: Vec<Instruction<'a>>) -> Vec<Instruction<'a>> {
-		let labels = dbg!(Instruction::get_addresses(&instructions));
+		let labels = Instruction::get_addresses(&instructions);
 		instructions
 			.into_iter()
 			.map(|inst| match inst {
