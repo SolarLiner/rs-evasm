@@ -2,6 +2,9 @@ use std::io::{self, Read};
 
 use clap::{App, Arg};
 
+// Re-exports
+pub use generate::assemble;
+
 use crate::utils::{Input, Output};
 
 pub const VERSION: Option<&'static str> = option_env!("CARGO_PKG_ENV");
