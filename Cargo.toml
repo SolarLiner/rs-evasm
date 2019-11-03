@@ -1,6 +1,6 @@
 [package]
 name = "evasm"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nathan Graule <solarliner@gmail.com>"]
 edition = "2018"
 
@@ -9,3 +9,8 @@ edition = "2018"
 [dependencies]
 clap = "2.33.0"
 peg = "0.6.0"
+wbuf = "0.1.0"
+
+[[bin]]
+name = "evasm"
+path = "bin/main.rs"
