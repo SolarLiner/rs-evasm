@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 clap = "2.33.0"
 peg = "0.6.0"
-wbuf = "0.1.0"
+wbuf = "0.1.1"
 
 [[bin]]
 name = "evasm"
