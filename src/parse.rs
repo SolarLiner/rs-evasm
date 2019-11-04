@@ -17,7 +17,9 @@ peg::parser! {
 		use std::usize;
 		use super::Instruction;
 		rule ws() = quiet!{[' ' | '\t']*} / expected!("whitespace")
-		rule instr_end() = quiet!{ws() "\n"+ ws()}
+		rule eol() = quiet!{(ws() "\r"? "\n")+} / expected!("eol")
+		rule comment() = quiet!{";" (!eol() [_])*} / expected!("comment")
+		rule instr_end() = quiet!{comment()? eol()}
 
 		rule dec() -> usize
 			= ws() n:$(['0'..='9']+) ws() {n.parse().unwrap()}
@@ -28,14 +30,17 @@ peg::parser! {
 		rule number() -> usize
 			= n:(quiet!{dec() / hex()}) / expected!("number")
 
-		rule instruction() -> &'input str = ws() i:$(quiet!{['a'..='z' | 'A'..='Z']+}) ws() {i} / expected!("instruction")
+		rule instruction() -> &'input str
+		= quiet!{ws() i:$(['a'..='z' | 'A'..='Z']+) ws() {i}}
+		/ expected!("instruction")
 
 		rule register() -> u8
 			= ws() "R" r:dec() {r as u8} / expected!("register")
 		rule constant() -> u16
 			= ws() "#" c:number() {c as u16} / expected!("constant")
 		rule label() -> &'input str
-			= ws() l:$(quiet!{['a'..='z' | 'A'..='Z' | '_'] (['0'..='9' | 'a'..='z' | 'A'..='Z' | '_'])*}) ws() {l}
+			= quiet!{ws() l:$(['a'..='z' | 'A'..='Z' | '_'] (['0'..='9' | 'a'..='z' | 'A'..='Z' | '_'])*) ws() {l}}
+			/ expected!("label")
 
 		rule instruction_r() -> Instruction<'input>
 			= i:instruction() r:register() {Instruction::Reg(i, r)}
@@ -55,13 +60,14 @@ peg::parser! {
 			= i:instruction() r1:register() "," ws() "[" r2:register() "]" ws() {Instruction::RegPtr(i, r1, r2)}
 
 		rule instruction_label() -> Instruction<'input>
-			= l:label() ":" ws() {Instruction::Label(l)} / expected!("label")
+			= l:label() ":" ws() {Instruction::Label(l)}
+			/ expected!("label instruction")
 
 		rule instruction_program() -> Instruction<'input>
 			= i:(instruction_rr() / instruction_rc() / instruction_rl() / instruction_rp() / instruction_r()) {i} / expected!("instruction")
 
 		pub rule program() -> Vec<Instruction<'input>>
-			= l:(instruction_program() / instruction_label()) ** (instr_end()+) (instr_end()*) {l}
+			= instr_end()* l:(instruction_program() / instruction_label()) ** (instr_end()+) instr_end()* {l}
 	}
 }
 
