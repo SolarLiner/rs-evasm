@@ -18,7 +18,7 @@ peg::parser! {
 		use super::Instruction;
 		rule ws() = quiet!{[' ' | '\t']*} / expected!("whitespace")
 		rule eol() = quiet!{(ws() "\r"? "\n")+} / expected!("eol")
-		rule comment() = quiet!{";" (!eol() [_])*} / expected!("comment")
+		rule comment() = ws() ";" (!eol() [_])*
 		rule instr_end() = quiet!{comment()? eol()}
 
 		rule dec() -> usize
@@ -67,7 +67,7 @@ peg::parser! {
 			= i:(instruction_rr() / instruction_rc() / instruction_rl() / instruction_rp() / instruction_r()) {i} / expected!("instruction")
 
 		pub rule program() -> Vec<Instruction<'input>>
-			= instr_end()* l:(instruction_program() / instruction_label()) ** (instr_end()+) instr_end()* {l}
+			= instr_end()* l:(instruction_program() / instruction_label()) ** (instr_end()+) (ws() comment()? eol())* {l}
 	}
 }
 
